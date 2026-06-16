@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function Hero() {
   const heroImages = [
-    "/headset3.png",
+    "/image copy 2.png",
     "/jbl speaker 3.png",
     "/headset3.png",
   ];
