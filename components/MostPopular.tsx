@@ -1,13 +1,14 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
 
 const categories = [
   {
     title: "HEADPHONE",
-    color: "bg-jbl-maroon",
+    color: "bg-red-900",
     price: "4999 ₹",
     rating: 4,
-    scale: "scale-90",
-    zIndex: "z-10",
     image: "/headphone.jpg",
   },
   {
@@ -15,8 +16,6 @@ const categories = [
     color: "bg-slate-600",
     price: "6999 ₹",
     rating: 5,
-    scale: "scale-95",
-    zIndex: "z-20",
     image: "/speaker.jpg",
   },
   {
@@ -24,9 +23,6 @@ const categories = [
     color: "bg-[#FF4B4B]",
     price: "3990 ₹",
     rating: 5,
-    scale: "scale-110",
-    zIndex: "z-30",
-    active: true,
     image: "/headphone.jpg",
   },
   {
@@ -34,8 +30,6 @@ const categories = [
     color: "bg-pink-500",
     price: "2999 ₹",
     rating: 4,
-    scale: "scale-95",
-    zIndex: "z-20",
     image: "/buds.jpg",
   },
   {
@@ -43,70 +37,116 @@ const categories = [
     color: "bg-purple-500",
     price: "1999 ₹",
     rating: 4,
-    scale: "scale-90",
-    zIndex: "z-10",
     image: "/clock.jpg",
   },
 ];
 
 export default function MostPopular() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % categories.length);
+    }, 1800);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <section className="py-24 bg-[#111] relative overflow-hidden" id="product">
+    <section
+      id="product"
+      className="py-24 bg-[#111] relative overflow-hidden"
+    >
       <div className="container mx-auto px-4">
-        <div className="flex items-end justify-center gap-4 mb-16">
+        <div className="flex items-end justify-center gap-3 mb-20">
           <h2 className="text-4xl font-bold text-white uppercase tracking-wider">
             MOST POPULAR
           </h2>
-          <span className="text-jbl-orange font-semibold text-xl mb-1">
+
+          <span className="text-[#FF4B4B] font-semibold text-xl mb-1">
             Categories
           </span>
         </div>
 
-        <div className="flex justify-center items-end min-h-[400px] gap-2 md:gap-4 relative">
-          {categories.map((cat, index) => (
-            <div
-              key={index}
-              className={`relative flex flex-col items-center p-6 rounded-3xl ${cat.color} ${cat.scale} ${cat.zIndex} shadow-2xl transition-transform hover:-translate-y-4`}
-              style={{
-                width: cat.active ? "260px" : "180px",
-                height: cat.active ? "320px" : "240px",
-                marginBottom: cat.active ? "20px" : "0",
-              }}
-            >
-              <div className={`absolute -top-16 w-32 h-32 ${cat.active ? "w-48 h-48 -top-24" : ""} drop-shadow-2xl`}>
-                <div className="w-full h-full relative flex items-center justify-center">
-                  <img src={cat.image} alt={cat.title} className="w-full h-full object-contain rounded-full drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" />
+        <div className="flex justify-center items-end gap-3 md:gap-5 min-h-[450px]">
+          {categories.map((cat, index) => {
+            const isActive = activeIndex === index;
+
+            return (
+              <div
+                key={index}
+                className={`
+                  relative flex flex-col items-center rounded-[35px]
+                  p-6 shadow-2xl
+                  transition-all duration-700 ease-in-out
+                  ${cat.color}
+                  ${isActive
+                    ? "w-[260px] h-[340px] scale-110 z-30 mb-8"
+                    : "w-[180px] h-[240px] scale-90 z-10"
+                  }
+                `}
+              >
+                {/* Product Image */}
+                <div
+                  className={`
+                    absolute transition-all duration-700
+                    ${isActive
+                      ? "-top-24 w-48 h-48"
+                      : "-top-14 w-32 h-32"
+                    }
+                  `}
+                >
+                  <img
+                    src={cat.image}
+                    alt={cat.title}
+                    className="w-full h-full object-contain rounded-full drop-shadow-[0_15px_20px_rgba(0,0,0,.5)]"
+                  />
+                </div>
+
+                <div className="mt-auto w-full">
+                  <h3
+                    className={`
+                      text-center text-white uppercase font-bold
+                      transition-all duration-500
+                      ${isActive ? "text-xl" : "text-sm"}
+                    `}
+                  >
+                    {cat.title}
+                  </h3>
+
+                  {isActive && (
+                    <p className="text-center text-white/70 text-xs mt-3 mb-5 leading-5">
+                      Lorem Ipsum Dolor Sit Amet, Consectetur Adipisicing Elit.
+                    </p>
+                  )}
+
+                  <div className="flex justify-between items-center">
+                    <div className="flex gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          size={14}
+                          className={`${i < cat.rating
+                              ? "fill-white text-white"
+                              : "text-white/30"
+                            }`}
+                        />
+                      ))}
+                    </div>
+
+                    <span className="bg-white text-black px-3 py-1 rounded-full text-xs font-bold">
+                      {cat.price}
+                    </span>
+                  </div>
                 </div>
               </div>
-
-              <div className="mt-auto w-full text-center">
-                <h3 className={`font-bold text-white uppercase ${cat.active ? "text-xl" : "text-sm"} mb-2`}>
-                  {cat.title}
-                </h3>
-                {cat.active && (
-                  <p className="text-white/80 text-xs mb-4">
-                    Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor
-                  </p>
-                )}
-
-                <div className="flex items-center justify-between mt-4">
-                  <div className="flex space-x-1 text-white">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className={`w-3 h-3 ${i < cat.rating ? "fill-white" : "fill-transparent opacity-50"}`} />
-                    ))}
-                  </div>
-                  <div className="bg-white text-black font-bold text-xs px-2 py-1 rounded-full">
-                    {cat.price}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        <div className="flex justify-center mt-16">
-          <button className="bg-[#FF4B4B] hover:bg-jbl-orange text-white font-bold py-3 px-10 rounded-full transition-colors uppercase tracking-widest shadow-lg">
-            VIEW ALL
+        <div className="flex justify-center mt-20">
+          <button className="bg-[#FF4B4B] hover:bg-red-600 transition-all duration-300 text-white px-10 py-3 rounded-full font-bold tracking-widest uppercase">
+            View All
           </button>
         </div>
       </div>
