@@ -1,59 +1,105 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function Hero() {
+  const heroImages = [
+    "/headset3.png",
+    "/jbl speaker 3.png",
+    "/headset3.png",
+  ];
+
+  const [currentImage, setCurrentImage] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % heroImages.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section className="relative w-full min-h-[90vh] flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-jbl-orange/80 via-black to-jbl-purple/80 z-0">
-        <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-jbl-orange/20 via-transparent to-transparent blur-3xl opacity-50"></div>
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/80 via-black to-purple-700/80">
+        <div className="absolute inset-0 opacity-20 bg-black"></div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mt-20">
-        <div className="lg:col-span-5 text-white space-y-6">
-          <h1 className="text-5xl md:text-6xl font-black leading-tight uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-300 drop-shadow-lg">
-            JUST PUT THE HEADPHONES ON, AND GO WITH THE FLOW!
+      <div className="container mx-auto px-4 relative z-10 grid lg:grid-cols-12 gap-8 items-center">
+
+        {/* Left Content */}
+        <div className="lg:col-span-5 text-white">
+          <h1 className="text-5xl md:text-6xl font-black leading-tight uppercase">
+            JUST PUT THE HEADPHONES ON,
+            <br />
+            AND GO WITH THE FLOW!
           </h1>
-          <p className="text-gray-300 text-lg max-w-md">
-            Lorem Ipsum Dolor Sit Amet Consectetur. Ac Tempor Eu Mollis Nascetur Convallis Viverra Lorem.
+
+          <p className="mt-6 text-gray-300">
+            Lorem Ipsum Dolor Sit Amet Consectetur. Ac Tempor Eu Mollis
+            Nascetur Convallis Viverra Lorem.
           </p>
-          <button className="bg-gradient-to-r from-jbl-orange to-orange-600 hover:from-orange-600 hover:to-jbl-orange text-white font-bold py-3 px-8 rounded-full shadow-[0_0_15px_rgba(255,75,36,0.5)] transition-all transform hover:scale-105">
+
+          <button className="mt-8 px-8 py-3 rounded-full bg-orange-500 hover:bg-orange-600 transition">
             ORDER NOW
           </button>
         </div>
 
-        <div className="lg:col-span-6 flex justify-center relative">
-          <div className="relative w-[300px] h-[300px] md:w-[500px] md:h-[500px]">
-            <div className="absolute inset-0 bg-jbl-orange/20 blur-[100px] rounded-full"></div>
+        {/* Center Image */}
+        <div className="lg:col-span-6 flex justify-center">
+          <div className="relative w-[320px] h-[320px] md:w-[520px] md:h-[520px]">
 
-            <div className="w-full h-full relative z-10 flex items-center justify-center drop-shadow-2xl hover:scale-105 transition-transform duration-500">
-              <Image src="/jbl speaker 3.png" alt="JBL Headphone" fill className="object-contain" priority />
-            </div>
+            <div className="absolute inset-0 rounded-full bg-orange-500/20 blur-[100px] animate-pulse"></div>
+
+            <Image
+              key={currentImage}
+              src={heroImages[currentImage]}
+              alt="Headset"
+              fill
+              priority
+              sizes="(max-width:768px) 320px, 520px"
+              className="object-contain animate-float"
+            />
           </div>
         </div>
 
-        <div className="lg:col-span-1 hidden lg:flex flex-col items-center justify-center space-y-4">
-          {[1, 2, 3].map((item) => (
-            <div key={item} className="w-16 h-16 rounded-lg bg-white/10 border border-white/20 p-1 cursor-pointer hover:border-jbl-orange transition-colors relative overflow-hidden">
-              {item === 1 ? (
-                <Image src="/jbloption1.jpg" alt="Thumbnail 1" fill className="object-cover rounded-md p-1" />
-              ) : item === 2 ? (
-                <Image src="/jbloption2.jpg" alt="Thumbnail 2" fill className="object-cover rounded-md p-1" />
-              ) : item === 3 ? (
-                <Image src="/jbloption3.jpg" alt="Thumbnail 3" fill className="object-cover rounded-md p-1" />
-              ) : (
-                <div className="w-full h-full bg-black/50 rounded-md flex items-center justify-center">
-                  <span className="text-xs text-white/50">Img {item}</span>
-                </div>
-              )}
-            </div>
+        {/* Right Thumbnails */}
+        <div className="hidden lg:flex lg:col-span-1 flex-col gap-4">
+          {heroImages.map((img, index) => (
+            <button
+              key={`thumb-${index}`}
+              onClick={() => setCurrentImage(index)}
+              className={`relative w-16 h-16 rounded-lg overflow-hidden border ${currentImage === index
+                ? "border-orange-500"
+                : "border-white/30"
+                }`}
+            >
+              <Image
+                src={img}
+                alt={`Headset ${index + 1}`}
+                fill
+                sizes="64px"
+                className="object-contain p-1"
+              />
+            </button>
           ))}
         </div>
       </div>
 
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
-        <div className="w-2 h-2 rounded-full bg-white"></div>
-        <div className="w-2 h-2 rounded-full bg-white/50"></div>
-        <div className="w-2 h-2 rounded-full bg-white/50"></div>
+      {/* Bottom Dots */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
+        {heroImages.map((_, index) => (
+          <button
+            key={`dot-${index}`}
+            onClick={() => setCurrentImage(index)}
+            className={`rounded-full transition-all ${currentImage === index
+              ? "w-8 h-2 bg-white"
+              : "w-2 h-2 bg-white/40"
+              }`}
+          />
+        ))}
       </div>
     </section>
   );
